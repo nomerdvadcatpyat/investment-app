@@ -4,7 +4,7 @@ services:
     image: postgres
     container_name: inv-db
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -19,18 +19,19 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
     depends_on:
       - inv-db
     networks:
       - app-network
 
   inv-flyway:
-    image: boxfuse/flyway:latest-alpine
+    image: flyway/flyway:latest
     container_name: inv-flyway
-    command: -url=jdbc:postgresql://inv-db:5432/main -connectRetries=60 -schemas=public -user=postgres -password=postgres migrate
+    command: -configFiles=/flyway/conf/flyway.config -connectRetries=60 migrate
     volumes:
-      - ./src/main/resources/db/migration:/flyway/sql
+      - ${PWD}/flyway-prod.properties:/flyway/conf/flyway.config
+      - ${PWD}/src/main/resources/db/migration:/flyway/sql
     depends_on:
       - inv-db
     networks:
