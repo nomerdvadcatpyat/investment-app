@@ -1,19 +1,11 @@
 package com.example.investment.app.back.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
-
-    public User() {
-    }
-
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +15,25 @@ public class User {
 
     @Column
     private String password;
+
+    @OneToMany
+    @JoinColumn(name="user_id")
+    private List<BrokerageAccount> brokerageAccount;
+
+    public User() {}
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public List<BrokerageAccount> getBrokerageAccount() {
+        return brokerageAccount;
+    }
+
+    public void setBrokerageAccount(List<BrokerageAccount> brokerageAccount) {
+        this.brokerageAccount = brokerageAccount;
+    }
 
     public Long getId() {
         return id;
