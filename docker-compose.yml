@@ -25,6 +25,17 @@ services:
     networks:
       - app-network
 
+  inv-flyway:
+    image: boxfuse/flyway:latest-alpine
+    container_name: inv-flyway
+    command: -url=jdbc:postgresql://inv-db:5432/main -connectRetries=60 -schemas=public -user=postgres -password=postgres migrate
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      - inv-db
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
