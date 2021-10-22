@@ -4,9 +4,6 @@ import useSWR from 'swr';
 
 const Home: NextPage = () => {
   const { data, error } = useSWR('/api/user/')
-
-    console.log('data', data)
-
   return (
       <Typography.Text>
         {error ? JSON.stringify(error) : JSON.stringify(data)}
