@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: main
     networks:
-      - app-network
+      - inv-app-network
 
   inv-app:
     image: investment-app
@@ -23,7 +23,7 @@ services:
     depends_on:
       - inv-db
     networks:
-      - app-network
+      - inv-app-network
 
   inv-flyway:
     image: flyway/flyway:latest
@@ -35,8 +35,8 @@ services:
     depends_on:
       - inv-db
     networks:
-      - app-network
+      - inv-app-network
 
 networks:
-  app-network:
+  inv-app-network:
     driver: bridge
