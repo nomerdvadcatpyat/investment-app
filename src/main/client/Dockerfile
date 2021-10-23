@@ -1,13 +1,31 @@
-FROM node:alpine as build
-WORKDIR /app
-COPY package.json /app/package.json
-RUN yarn install
-COPY . /app
-RUN yarn build
+# Base on offical Node.js Alpine image
+FROM node:alpine
 
-FROM nginx:1.16.0-alpine
-COPY --from=build /app/build /usr/share/nginx/html
-RUN rm /etc/nginx/conf.d/default.conf
-COPY ./nginx/nginx.conf /etc/nginx/conf.d
+# Set working directory
+WORKDIR /usr/app
+
+# Install PM2 globally
+RUN npm install --global pm2
+
+# Copy package.json and package-lock.json before other files
+# Utilise Docker cache to save re-installing dependencies if unchanged
+COPY ./package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all files
+COPY ./ ./
+
+# Build app
+RUN npm run build
+
+# Expose the listening port
 EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
+
+# Run container as non-root (unprivileged) user
+# The node user is provided in the Node.js Alpine base image
+USER node
+
+# Run npm start script with PM2 when container starts
+CMD [ "pm2-runtime", "npm", "--", "start" ]

@@ -12,6 +12,18 @@ services:
     networks:
       - inv-app-network
 
+  inv-flyway:
+    image: flyway/flyway:latest
+    container_name: inv-flyway
+    command: -configFiles=/flyway/conf/flyway.config -connectRetries=60 migrate
+    volumes:
+      - ${PWD}/flyway-prod.properties:/flyway/conf/flyway.config
+      - ${PWD}/src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      - inv-db
+    networks:
+      - inv-app-network
+
   inv-app:
     image: investment-app
     container_name: inv-app
@@ -25,15 +37,33 @@ services:
     networks:
       - inv-app-network
 
-  inv-flyway:
-    image: flyway/flyway:latest
-    container_name: inv-flyway
-    command: -configFiles=/flyway/conf/flyway.config -connectRetries=60 migrate
-    volumes:
-      - ${PWD}/flyway-prod.properties:/flyway/conf/flyway.config
-      - ${PWD}/src/main/resources/db/migration:/flyway/sql
+  inv-app-client:
+    build:
+      context: src/main/client
+      dockerfile: Dockerfile
+    container_name: inv-front
+#    ports:
+#      - "3000:3000"
+    environment:
+      SERVER_URL: inv-nginx
     depends_on:
-      - inv-db
+      - inv-app
+    networks:
+      - inv-app-network
+
+  inv-nginx:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    container_name: inv-nginx
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - inv-app-client
     networks:
       - inv-app-network
 
