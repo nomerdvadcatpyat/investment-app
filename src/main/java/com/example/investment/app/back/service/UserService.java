@@ -11,13 +11,21 @@ import java.util.List;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public void createUsers(List<User> users) {
-        userRepository.saveAll(users);
+    public UserService (UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
+    public User saveUser (User user) {
+        return userRepository.save(user);
+    }
+
+    public List<User> findAll () {
         return userRepository.findAll();
+    }
+
+    public User getUserById (Long id) {
+        return userRepository.getById(id);
     }
 }

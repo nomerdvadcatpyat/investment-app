@@ -15,12 +15,10 @@ public class BrokerageAccountSecurities {
     @Column
     private Long count;
 
-    public BrokerageAccountSecurities() {}
+    @Column
+    private Long brokerageAccountId;
 
-    public BrokerageAccountSecurities(String ticker, Long count) {
-        this.ticker = ticker;
-        this.count = count;
-    }
+    public BrokerageAccountSecurities() {}
 
     public Long getId() {
         return id;
@@ -44,5 +42,13 @@ public class BrokerageAccountSecurities {
 
     public void setCount(Long count) {
         this.count = count;
+    }
+
+    public Long getBrokerageAccountId() {
+        return brokerageAccountId;
+    }
+
+    public void setBrokerageAccountId(Long brokerageAccountId) {
+        this.brokerageAccountId = brokerageAccountId;
     }
 }

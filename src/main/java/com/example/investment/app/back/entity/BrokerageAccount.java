@@ -13,15 +13,14 @@ public class BrokerageAccount {
     @Column
     private String name;
 
-    @OneToMany
-    @JoinColumn(name="brokerage_account_id")
-    private List<BrokerageAccountSecurities> brokerageAccountSecurities;
+    @Column
+    private Long userId;
+
+//    @OneToMany
+//    @JoinColumn(name="brokerage_account_id")
+//    private List<BrokerageAccountSecurities> brokerageAccountSecurities;
 
     public BrokerageAccount() {}
-
-    public BrokerageAccount(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;
@@ -39,11 +38,19 @@ public class BrokerageAccount {
         this.name = name;
     }
 
-    public List<BrokerageAccountSecurities> getBrokerageAccountSecurities() {
-        return brokerageAccountSecurities;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setBrokerageAccountSecurities(List<BrokerageAccountSecurities> brokerageAccountSecurities) {
-        this.brokerageAccountSecurities = brokerageAccountSecurities;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
+
+    //    public List<BrokerageAccountSecurities> getBrokerageAccountSecurities() {
+//        return brokerageAccountSecurities;
+//    }
+//
+//    public void setBrokerageAccountSecurities(List<BrokerageAccountSecurities> brokerageAccountSecurities) {
+//        this.brokerageAccountSecurities = brokerageAccountSecurities;
+//    }
 }
