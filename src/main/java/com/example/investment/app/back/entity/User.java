@@ -16,24 +16,19 @@ public class User {
     @Column
     private String password;
 
-    @OneToMany
-    @JoinColumn(name="user_id")
-    private List<BrokerageAccount> brokerageAccount;
+//    @OneToMany
+//    @JoinColumn(name="user_id")
+//    private List<BrokerageAccount> brokerageAccount;
 
     public User() {}
 
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
-
-    public List<BrokerageAccount> getBrokerageAccount() {
-        return brokerageAccount;
-    }
-
-    public void setBrokerageAccount(List<BrokerageAccount> brokerageAccount) {
-        this.brokerageAccount = brokerageAccount;
-    }
+//    public List<BrokerageAccount> getBrokerageAccount() {
+//        return brokerageAccount;
+//    }
+//
+//    public void setBrokerageAccount(List<BrokerageAccount> brokerageAccount) {
+//        this.brokerageAccount = brokerageAccount;
+//    }
 
     public Long getId() {
         return id;

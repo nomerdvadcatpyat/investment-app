@@ -30,8 +30,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     depends_on:
       - inv-db
     networks:
@@ -42,8 +40,6 @@ services:
       context: src/main/client
       dockerfile: Dockerfile
     container_name: inv-front
-#    ports:
-#      - "3000:3000"
     environment:
       SERVER_URL: inv-nginx
     depends_on:

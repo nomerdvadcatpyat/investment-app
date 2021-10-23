@@ -1,28 +1,32 @@
 package com.example.investment.app.back.controller;
 
-import com.example.investment.app.back.service.BrokerageAccountService;
-import com.example.investment.app.back.service.UserService;
+import com.example.investment.app.back.entity.BrokerageAccount;
+import com.example.investment.app.back.entity.BrokerageAccountSecurities;
+import com.example.investment.app.back.service.BrokerageAccountSecuritiesService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.util.List;
+
+@RestController("/api/brokerage-account")
 public class BrokerageAccountController {
 
-    private final UserService userService;
+    @Autowired
+    private final BrokerageAccountSecuritiesService brokerageAccountSecuritiesService;
 
-    private final BrokerageAccountService brokerageAccountService;
-
-    public BrokerageAccountController(UserService userService, BrokerageAccountService brokerageAccountService) {
-        this.userService = userService;
-        this.brokerageAccountService = brokerageAccountService;
+    public BrokerageAccountController (BrokerageAccountSecuritiesService brokerageAccountSecuritiesService) {
+        this.brokerageAccountSecuritiesService = brokerageAccountSecuritiesService;
     }
 
-    @GetMapping("user/{id}")
-    public ResponseEntity<?> helloWorld(@RequestParam("id") Long id) {
-        return ;
+    @GetMapping("{brokerageAccountId}/securities")
+    public List<BrokerageAccountSecurities> getBrokerageAccountSecurities (@PathVariable("brokerageAccountId") Long brokerageAccountId) {
+        return brokerageAccountSecuritiesService.findAllByBrokerageAccountId(brokerageAccountId);
     }
+
+//    @PutMapping
+//    public BrokerageAccountSecurities saveBrokerageAccountSecurities () {
+//
+//    }
 
 }
