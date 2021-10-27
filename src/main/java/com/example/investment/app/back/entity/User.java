@@ -1,5 +1,7 @@
 package com.example.investment.app.back.entity;
 
+import com.example.investment.app.back.dtoObjects.UserDTO;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,15 +18,26 @@ public class User {
     @Column
     private String password;
 
+    @Column
+    private String role;
+
     @OneToMany
     @JoinColumn(name="user_id")
     private List<BrokerageAccount> brokerageAccount;
 
     public User() {}
 
-    public User(String login, String password) {
+    public User(String login, String password, String role) {
         this.login = login;
         this.password = password;
+        this.role = role;
+    }
+
+    public User(UserDTO userDto)
+    {
+        login = userDto.getLogin();
+        password = userDto.getPassword();
+        role = userDto.getRole();
     }
 
     public List<BrokerageAccount> getBrokerageAccount() {
@@ -57,5 +70,15 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole()
+    {
+        return role;
+    }
+
+    public void setRole(String role)
+    {
+        this.role = role;
     }
 }

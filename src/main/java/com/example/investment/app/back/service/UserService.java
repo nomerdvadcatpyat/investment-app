@@ -1,5 +1,6 @@
 package com.example.investment.app.back.service;
 
+import com.example.investment.app.back.dtoObjects.UserDTO;
 import com.example.investment.app.back.entity.User;
 import com.example.investment.app.back.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService{
 
     @Autowired
     private UserRepository userRepository;
@@ -19,5 +20,16 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public User findUserByLogin(String login)
+    {
+        return userRepository.findByLogin(login);
+    }
+
+    public User registerNewUserAccount(UserDTO userDto)
+    {
+        User user = new User(userDto);
+        return userRepository.save(user);
     }
 }
