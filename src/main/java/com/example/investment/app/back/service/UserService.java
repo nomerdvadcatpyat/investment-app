@@ -32,4 +32,10 @@ public class UserService{
         User user = new User(userDto);
         return userRepository.save(user);
     }
+
+    public User authorizeUser(UserDTO userDto)
+    {
+        User user = userRepository.findByLogin(userDto.getLogin());
+        return user;
+    }
 }
