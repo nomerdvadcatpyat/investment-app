@@ -1,5 +1,5 @@
 import {IAuthedItem, IErrorStatusResponse} from "../schema";
-import {api} from "../axios";
+import {api} from "../fetch";
 
 export class AuthService {
     static auth = async (): Promise<IAuthedItem & IErrorStatusResponse> => {

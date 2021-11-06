@@ -10,12 +10,10 @@ import {Router} from "next/router";
 import AuthStore, {AuthProvider, useAuth} from "../store/authStore";
 import {AppSider} from "../components/common/layout/Sider";
 import {MainLoader} from "../components/common/Loader";
+import {fetcher} from "../fetch";
 
 const { Content } = Layout;
 const store = new AuthStore()
-
-const SERVER_URL = process.env.SERVER_URL || ''
-const fetcher = (url: string) => fetch(`${SERVER_URL}${url}`).then(response => response.json())
 
 const AppContent: FC<any> = observer(({Component, pageProps}) => {
     const authStore = useAuth()
@@ -38,11 +36,11 @@ const AppContent: FC<any> = observer(({Component, pageProps}) => {
         }
     }, [])
 
-    useEffect(() => {
-        if (!authStore.user) {
-            authStore.auth()
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (!authStore.user) {
+    //         authStore.auth()
+    //     }
+    // }, [])
 
     return (
         <Layout hasSider={true} className={'layout'}>
