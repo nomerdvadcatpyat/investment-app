@@ -1,6 +1,6 @@
 package com.example.investment.app.back.controller;
 
-import com.example.investment.app.back.entity.BrokerageAccountSecurities;
+import com.example.investment.app.back.model.BrokerageAccountSecurities;
 import com.example.investment.app.back.service.BrokerageAccountSecuritiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

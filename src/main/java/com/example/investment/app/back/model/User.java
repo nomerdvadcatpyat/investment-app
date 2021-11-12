@@ -1,6 +1,4 @@
-package com.example.investment.app.back.entity;
-
-import com.example.investment.app.back.dtoObjects.UserDTO;
+package com.example.investment.app.back.model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,13 +11,14 @@ public class User {
     private Long id;
 
     @Column
-    private String login;
+    private String username;
 
     @Column
     private String password;
 
-    @Column
-    private String role;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role")
+    private Role role;
 
     @OneToMany
     @JoinColumn(name="user_id")
@@ -27,17 +26,9 @@ public class User {
 
     public User() {}
 
-    public User(String login, String password, String role) {
-        this.login = login;
+    public User(String username, String password) {
+        this.username = username;
         this.password = password;
-        this.role = role;
-    }
-
-    public User(UserDTO userDto)
-    {
-        login = userDto.getLogin();
-        password = userDto.getPassword();
-        role = userDto.getRole();
     }
 
     public List<BrokerageAccount> getBrokerageAccount() {
@@ -56,12 +47,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -72,12 +63,12 @@ public class User {
         this.password = password;
     }
 
-    public String getRole()
+    public Role getRole()
     {
         return role;
     }
 
-    public void setRole(String role)
+    public void setRole(Role role)
     {
         this.role = role;
     }

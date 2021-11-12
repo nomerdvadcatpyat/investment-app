@@ -2,6 +2,7 @@ target
 .idea
 .DS_Store
 src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
 /investment.app.back.iml
 /investment.app.back_BACKUP_1843.iml
 /investment.app.back_BACKUP_874.iml

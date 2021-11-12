@@ -1,0 +1,6 @@
+package com.example.investment.app.back.model;
+
+public enum ERole {
+	ROLE_USER,
+	ROLE_ADMIN
+}

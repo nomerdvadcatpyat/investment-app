@@ -1,6 +1,6 @@
 package com.example.investment.app.back.repository;
 
-import com.example.investment.app.back.entity.BrokerageAccount;
+import com.example.investment.app.back.model.BrokerageAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

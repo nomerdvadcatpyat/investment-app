@@ -1,7 +1,6 @@
-package com.example.investment.app.back.entity;
+package com.example.investment.app.back.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "brokerage_accounts")
