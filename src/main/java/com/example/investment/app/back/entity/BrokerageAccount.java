@@ -13,7 +13,7 @@ public class BrokerageAccount {
     @Column
     private String name;
 
-    @Column
+    @Column(name = "user_id")
     private Long userId;
 
 //    @OneToMany
