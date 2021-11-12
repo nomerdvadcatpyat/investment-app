@@ -1,1 +1,1 @@
-insert into roles (role) values ('admin'), ('user');
+insert into roles (role) values ('ROLE_ADMIN'), ('ROLE_USER');

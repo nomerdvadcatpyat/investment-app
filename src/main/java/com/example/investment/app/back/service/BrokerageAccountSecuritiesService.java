@@ -1,12 +1,11 @@
 package com.example.investment.app.back.service;
 
-import com.example.investment.app.back.entity.BrokerageAccountSecurities;
+import com.example.investment.app.back.model.BrokerageAccountSecurities;
 import com.example.investment.app.back.repository.BrokerageAccountSecuritiesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BrokerageAccountSecuritiesService {

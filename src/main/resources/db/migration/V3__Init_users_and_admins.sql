@@ -1,6 +1,6 @@
-insert into users (login, password, role)
+insert into users (username, password, role)
 values
-       ('admin', 'admin', 'admin'),
-       ('root', 'root', 'admin'),
-       ('user_1', 'qwe', 'user'),
-       ('user_2', 'qwe', 'user');
+       ('admin', 'admin', 'ROLE_ADMIN'),
+       ('root', 'root', 'ROLE_ADMIN'),
+       ('user_1', 'qwe', 'ROLE_USER'),
+       ('user_2', 'qwe', 'ROLE_USER');
