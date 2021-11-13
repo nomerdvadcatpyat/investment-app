@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {Typography} from "antd";
 import Link from 'next/link'
 import {useAuth} from "../../store/authStore";
+import {INDEX_PAGE} from "../../constants/common";
 
 const LoginPage = observer(() => {
     const router = useRouter()
@@ -24,7 +25,7 @@ const LoginPage = observer(() => {
         if (authStore.error) {
             setError(authStore.error)
         }
-        else router.push('/')
+        else router.push(INDEX_PAGE)
     }
 
     return (

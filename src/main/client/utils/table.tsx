@@ -1,5 +1,6 @@
 import get from 'lodash/get'
 import isNaN from 'lodash/isNaN'
+import isString from 'lodash/isString'
 import {CSSProperties, FC} from "react";
 import {Button, Input, Space} from "antd";
 
@@ -67,10 +68,17 @@ export const getTextFilterDropdown = (placeholder: string) => ({ setSelectedKeys
 )
 
 
-export const getTextFilterColumnProperties = (dataIndex: string, placeholder: string) => ({
-    filterDropdown: getTextFilterDropdown(placeholder),
-    onFilter: (value: string, record: any) =>
-        record[dataIndex]
-            ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-            : '',
-})
+export function getTextFilterColumnProperties <T> (dataIndex: string, placeholder: string) {
+    return {
+        filterDropdown: getTextFilterDropdown(placeholder),
+        onFilter: (value: string | number | boolean, record: T) => {
+            const recordValue = get(record, dataIndex)
+
+            if (typeof value !== 'string') return
+
+            return recordValue
+                ? recordValue.toString().toLowerCase().includes(value.toLowerCase())
+                : ''
+        }
+    }
+}

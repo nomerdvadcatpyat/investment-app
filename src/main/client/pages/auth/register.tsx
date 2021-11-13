@@ -4,6 +4,7 @@ import {observer} from "mobx-react";
 import {useEffect, useState} from "react";
 import Link from 'next/link'
 import {useAuth} from "../../store/authStore";
+import {INDEX_PAGE} from "../../constants/common";
 
 const RegisterPage = observer(() => {
     const router = useRouter()
@@ -23,7 +24,7 @@ const RegisterPage = observer(() => {
         if (authStore.error) {
             setError(authStore.error)
         }
-        else router.push('/')
+        else router.push(INDEX_PAGE)
     }
 
     return (

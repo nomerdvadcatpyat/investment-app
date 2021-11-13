@@ -57,7 +57,7 @@ export const useTableColumns = () => {
             key: DATA_INDICES.SECID,
             width: '10%',
             sorter: getTextSorter(DATA_INDICES.SECID),
-            ...getTextFilterColumnProperties(DATA_INDICES.SECID, 'Тикер'),
+            ...getTextFilterColumnProperties<Security>(DATA_INDICES.SECID, 'Тикер'),
         },
         {
             title: 'Название',
@@ -65,7 +65,7 @@ export const useTableColumns = () => {
             key: DATA_INDICES.SHORTNAME,
             width: '15%',
             sorter: getTextSorter(DATA_INDICES.SHORTNAME),
-            ...getTextFilterColumnProperties(DATA_INDICES.SHORTNAME, 'Название'),
+            ...getTextFilterColumnProperties<Security>(DATA_INDICES.SHORTNAME, 'Название'),
         },
         {
             title: 'Цена',
@@ -74,7 +74,7 @@ export const useTableColumns = () => {
             width: '10%',
             render: renderPrice,
             sorter: getNumberSorter(DATA_INDICES.LAST),
-            ...getTextFilterColumnProperties(DATA_INDICES.LAST, 'Цена'),
+            ...getTextFilterColumnProperties<Security>(DATA_INDICES.LAST, 'Цена'),
         },
         {
             title: 'Изменение',

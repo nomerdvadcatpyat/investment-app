@@ -2,8 +2,8 @@ import type {NextPage} from 'next'
 import {Table} from "antd";
 import useSWR from 'swr';
 
-import {AuthRequired} from "../components/auth/AuthRequired";
-import {useTableColumns} from "../hooks/shares/useTableColumns";
+import {AuthRequired} from "../../components/auth/AuthRequired";
+import {useTableColumns} from "../../hooks/shares/useTableColumns";
 
 enum Market {
     SHARES = 'shares',

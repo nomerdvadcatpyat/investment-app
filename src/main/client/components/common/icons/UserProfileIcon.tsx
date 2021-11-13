@@ -6,6 +6,6 @@ const UserProfileSVG = ({ width = '20px', height = '20px' }) => (
     </svg>
 )
 
-export const UserProfileIcon = (props) => (
+export const UserProfileIcon = (props: any) => (
     <Icon component={UserProfileSVG} {...props} />
 )

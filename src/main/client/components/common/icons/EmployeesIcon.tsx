@@ -7,5 +7,6 @@ const EmployeesSVG = ({ width = '20px', height = '20px' }) => (
 )
 
 export const EmployeesIcon = ({ width = '20px', height = '20px' }) => (
+    // @ts-ignore
     <Icon component={EmployeesSVG} width={width} height={height} />
 )

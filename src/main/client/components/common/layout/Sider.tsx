@@ -11,14 +11,11 @@ import {
     TableOutlined
 } from "@ant-design/icons";
 import Link from "next/link";
-import {ClassIcon} from "../icons/ClassIcon";
 import {EmployeesIcon} from "../icons/EmployeesIcon";
-import {StudentIcon} from "../icons/StudentIcon";
-import {ParentsIcon} from "../icons/ParentsIcon";
-import {BookIcon} from "../icons/BookIcon";
-import {TimeTableIcon} from "../icons/TimeTableIcon";
 import {useAuth} from "../../../store/authStore";
 import {MENU_ITEMS, queryToMenuItem} from "../../../utils/menuHelpers";
+import {UserProfileIcon} from "../icons/UserProfileIcon";
+import {INDEX_PAGE} from "../../../constants/common";
 
 const { Sider } = Layout;
 
@@ -31,13 +28,15 @@ export const AppSider = observer(() => {
     const handleLogout = useCallback(async () => {
         setCollapsed(true)
         await authStore.logout()
-        await router.push('/')
+        await router.push(INDEX_PAGE)
     }, [])
 
     const handleLogin = useCallback(async ()  => {
         setCollapsed(true)
         await router.push('/auth/login')
     }, [])
+
+    const collapseSider = () => setCollapsed(true)
 
     return (
         <>
@@ -79,44 +78,14 @@ export const AppSider = observer(() => {
                     {
                         authStore.token ? (
                             <>
-                                {/*<Menu.Item key={MENU_ITEMS.USER} onClick={() => setCollapsed(true)} icon={<UserProfileIcon/>}>*/}
-                                {/*    <Link href={`/${MENU_ITEMS.USER}`}>*/}
-                                {/*        Профиль пользователя*/}
-                                {/*    </Link>*/}
-                                {/*</Menu.Item>*/}
-                                <Menu.Item key={MENU_ITEMS.CLASS} onClick={() => setCollapsed(true)} icon={<ClassIcon/>}>
-                                    <Link href={`/${MENU_ITEMS.CLASS}`}>
-                                        Классы
+                                <Menu.Item key={MENU_ITEMS.USER} onClick={collapseSider} icon={<UserProfileIcon/>}>
+                                    <Link href={`/${MENU_ITEMS.USER}`}>
+                                        Профиль пользователя
                                     </Link>
                                 </Menu.Item>
-                                <Menu.Item key={MENU_ITEMS.EMPLOYEE} onClick={() => setCollapsed(true)} icon={<EmployeesIcon/>}>
-                                    <Link href={`/${MENU_ITEMS.EMPLOYEE}`}>
-                                        Сотрудники
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key={MENU_ITEMS.STUDENTS} onClick={() => setCollapsed(true)} icon={<StudentIcon/>}>
-                                    <Link href={`/${MENU_ITEMS.STUDENTS}`}>
-                                        Ученики
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key={MENU_ITEMS.PARENTS} onClick={() => setCollapsed(true)} icon={<ParentsIcon/>}>
-                                    <Link href={`/${MENU_ITEMS.PARENTS}`}>
-                                        Родители
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key={MENU_ITEMS.SUBJECTS} onClick={() => setCollapsed(true)} icon={<BookIcon />}>
-                                    <Link href={`/${MENU_ITEMS.SUBJECTS}`}>
-                                        Учебные предметы
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key={MENU_ITEMS.TIMETABLE} onClick={() => setCollapsed(true)} icon={<TimeTableIcon />}>
-                                    <Link href={`/${MENU_ITEMS.TIMETABLE}`}>
-                                        Расписание занятий
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.Item key={MENU_ITEMS.JOURNAL} onClick={() => setCollapsed(true)} icon={<ReadOutlined/>}>
-                                    <Link href={`/${MENU_ITEMS.JOURNAL}`}>
-                                        Классные журналы
+                                <Menu.Item key={MENU_ITEMS.EXCHANGE} onClick={collapseSider} icon={<EmployeesIcon/>}>
+                                    <Link href={`/${MENU_ITEMS.EXCHANGE}`}>
+                                        Биржа
                                     </Link>
                                 </Menu.Item>
                                 <Menu.Item key="logout" icon={<LogoutOutlined/>} onClick={handleLogout}>
