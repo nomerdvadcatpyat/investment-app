@@ -1,8 +1,8 @@
-import {useCallback, useMemo} from "react";
-import {Typography} from "antd";
+import {CSSProperties, FC, useCallback, useMemo} from "react";
+import {Button, Input, Space, Typography} from "antd";
 
 import {EMPTY_CELL_SYMBOL} from "../../constants/table";
-import {getNumberSorter, getTextSorter} from "../../utils/table";
+import {getNumberSorter, getTextFilterColumnProperties, getTextFilterDropdown, getTextSorter} from "../../utils/table";
 
 type Security = {
     SECID: string
@@ -56,14 +56,16 @@ export const useTableColumns = () => {
             dataIndex: DATA_INDICES.SECID,
             key: DATA_INDICES.SECID,
             width: '10%',
-            sorter: getTextSorter(DATA_INDICES.SECID)
+            sorter: getTextSorter(DATA_INDICES.SECID),
+            ...getTextFilterColumnProperties(DATA_INDICES.SECID, 'Тикер'),
         },
         {
             title: 'Название',
             dataIndex: DATA_INDICES.SHORTNAME,
             key: DATA_INDICES.SHORTNAME,
             width: '15%',
-            sorter: getTextSorter(DATA_INDICES.SHORTNAME)
+            sorter: getTextSorter(DATA_INDICES.SHORTNAME),
+            ...getTextFilterColumnProperties(DATA_INDICES.SHORTNAME, 'Название'),
         },
         {
             title: 'Цена',
@@ -71,7 +73,8 @@ export const useTableColumns = () => {
             key: DATA_INDICES.LAST,
             width: '10%',
             render: renderPrice,
-            sorter: getNumberSorter(DATA_INDICES.LAST)
+            sorter: getNumberSorter(DATA_INDICES.LAST),
+            ...getTextFilterColumnProperties(DATA_INDICES.LAST, 'Цена'),
         },
         {
             title: 'Изменение',
