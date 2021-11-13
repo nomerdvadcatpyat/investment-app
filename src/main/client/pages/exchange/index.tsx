@@ -6,21 +6,20 @@ import get from 'lodash/get'
 import {Gutter} from "antd/es/grid/row";
 
 import {AuthRequired} from "../../components/auth/AuthRequired";
-import {useTableColumns} from "../../hooks/shares/useTableColumns";
+import {Security, useTableColumns} from "../../hooks/shares/useTableColumns";
 import {ExchangeSelect} from "../../components/exchange/ExchangeSelect";
 import {BOARD_OPTIONS, Market, MARKET_OPTIONS, SharesBoard} from "../../constants/exchange";
+import {useRouter} from "next/router";
 
 const MAIN_ROW_GUTTERS: [Gutter, Gutter] = [0, 20]
 const SELECTS_ROW_GUTTERS: [Gutter, Gutter] = [20, 0]
 
 const Home: NextPage = () => {
+    const router = useRouter()
     const columns = useTableColumns()
     const [boardOptions, setBoardOptions] = useState()
     const [selectedMarket, setSelectedMarket] = useState<string>(Market.SHARES)
     const [selectedBoard, setSelectedBoard] = useState<string>(SharesBoard.TQBR)
-
-    const handleMarketSelect = useCallback((market) => setSelectedMarket(market), [])
-    const handleBoardSelect = useCallback((board) => setSelectedBoard(board), [])
 
     const { data, error } = useSWR(`/api/exchange/${selectedMarket}/${selectedBoard}`)
 
@@ -29,6 +28,16 @@ const Home: NextPage = () => {
         setSelectedBoard(boards[0].value)
         setBoardOptions(boards)
     }, [selectedMarket])
+
+    const handleMarketSelect = useCallback((market) => setSelectedMarket(market), [])
+    const handleBoardSelect = useCallback((board) => setSelectedBoard(board), [])
+    const handleOnRow = (record: Security) => ({
+      onClick: () => {
+          router.push({
+              pathname: router.route + `/${selectedMarket}/${selectedBoard}/${record.SECID}`
+          })
+      }
+    })
 
     return (
         <AuthRequired>
@@ -62,6 +71,7 @@ const Home: NextPage = () => {
                         dataSource={data}
                         columns={columns}
                         loading={!data && !error}
+                        onRow={handleOnRow}
                     />
                 </Col>
             </Row>

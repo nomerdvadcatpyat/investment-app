@@ -4,7 +4,7 @@ import {Button, Input, Space, Typography} from "antd";
 import {EMPTY_CELL_SYMBOL} from "../../constants/table";
 import {getNumberSorter, getTextFilterColumnProperties, getTextFilterDropdown, getTextSorter} from "../../utils/table";
 
-type Security = {
+export type Security = {
     SECID: string
     SHORTNAME: string
     // last price
