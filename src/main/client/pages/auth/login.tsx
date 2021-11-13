@@ -18,8 +18,9 @@ const LoginPage = observer(() => {
     }, [])
 
     const onFinish = async (values: any) => {
-        const { email, password } = values
-        await authStore.login(email, password)
+        const { login, password } = values
+        await authStore.login(login, password)
+
         if (authStore.error) {
             setError(authStore.error)
         }
@@ -37,8 +38,8 @@ const LoginPage = observer(() => {
                     onFinish={onFinish}
                 >
                     <Form.Item
-                        label="Почта"
-                        name="email"
+                        label="Логин"
+                        name="login"
                         rules={[{required: true, message: 'Заполните поле'}]}
                     >
                         <Input/>
