@@ -33,12 +33,12 @@ public class ExchangeController {
         return Mapper.MapSecurities(securities);
     }
 
-    @GetMapping("/{market}/{board}/{secId}")
+    @RequestMapping(value = "/{market}/{board}/{secId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     public String getSecurity (
             @PathVariable("market") String market,
             @PathVariable("board") String board,
             @PathVariable("secId") String secId
     ) {
-        return exchangeService.getSecurity(market, board, secId);
+        return Mapper.MapSecurity(exchangeService.getSecurity(market, board, secId));
     }
 }
