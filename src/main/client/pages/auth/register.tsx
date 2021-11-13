@@ -1,8 +1,7 @@
-import {Button, Checkbox, Col, Form, Input, Row} from "antd";
+import {Button, Checkbox, Col, Form, Input, Row, Typography} from "antd";
 import {useRouter} from "next/router";
 import {observer} from "mobx-react";
 import {useEffect, useState} from "react";
-import {Typography} from "antd";
 import Link from 'next/link'
 import {useAuth} from "../../store/authStore";
 
@@ -18,8 +17,9 @@ const RegisterPage = observer(() => {
     }, [])
 
     const onFinish = async (values: any) => {
-        const { email, password } = values
-        await authStore.register(email, password)
+        const { login, password } = values
+        await authStore.register(login, password)
+
         if (authStore.error) {
             setError(authStore.error)
         }
@@ -37,8 +37,8 @@ const RegisterPage = observer(() => {
                     onFinish={onFinish}
                 >
                     <Form.Item
-                        label="Почта"
-                        name="email"
+                        label="Логин"
+                        name="login"
                         rules={[{required: true, message: 'Заполните поле'}]}
                     >
                         <Input/>

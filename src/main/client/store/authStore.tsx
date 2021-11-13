@@ -1,12 +1,13 @@
 import {makeAutoObservable} from "mobx";
-import {AuthService} from "../services/AuthService";
+import {AuthLoginInfo, AuthService, SignUpInfo} from "../services/AuthService";
 import {createContext, FC, useContext} from "react";
-import {IAuthedItem} from "../schema";
 
 export default class AuthStore {
-    user: IAuthedItem | null = null
-    loading: boolean = true
+    token: string | null = null
+    role: string | null = null
+
     error: string | null = null
+    loading: boolean = true
 
     constructor () {
         makeAutoObservable(this)
@@ -15,53 +16,70 @@ export default class AuthStore {
     async auth () {
         try {
             this.loading = true
-            const { userId, roles, error } = await AuthService.auth()
 
-            if (error) this.error = error
-            else if (!userId) this.user = null
-            else {
-                this.error = null
-                this.user = {
-                    userId,
-                    roles
-                }
+            const userInfo = await AuthService.auth()
+
+            if (userInfo && userInfo.token) {
+                this.token = userInfo.token
             }
+
+            // if (error) this.error = error
+            // else if (!userId) this.user = null
+            // else {
+            //     this.error = null
+            //     this.user = {
+            //         userId,
+            //         roles
+            //     }
+            // }
         } finally {
             this.loading = false
         }
     }
 
-    async login (email: string, password: string) {
+    async login (username: string, password: string) {
         try {
             this.loading = true
-            const { userId, roles, error } = await AuthService.login(email, password)
 
-            if (error) this.error = error
-            else {
-                this.error = null
-                this.user = {
-                    userId,
-                    roles
-                }
+            const authLoginInfo: AuthLoginInfo = { username, password }
+            const { token } = await AuthService.login(authLoginInfo)
+
+            if (token) {
+                this.token = token
             }
+
+            // if (error) this.error = error
+            // else {
+            //     this.error = null
+            //     this.user = {
+            //         userId,
+            //         roles
+            //     }
+            // }
         } finally {
             this.loading = false
         }
     }
 
-    async register (email: string, password: string) {
+    async register (username: string, password: string) {
         try {
             this.loading = true
-            const { userId, roles, error } = await AuthService.register(email, password)
 
-            if (error) this.error = error
-            else {
-                this.error = null
-                this.user = {
-                    userId,
-                    roles
-                }
+            const signUpInfo: SignUpInfo = { username, password }
+            const { token } = await AuthService.register(signUpInfo)
+
+            if (token) {
+                this.token = token
             }
+
+            // if (error) this.error = error
+            // else {
+            //     this.error = null
+            //     this.user = {
+            //         userId,
+            //         roles
+            //     }
+            // }
         } finally {
             this.loading = false
         }
@@ -70,13 +88,17 @@ export default class AuthStore {
     async logout () {
         try {
             this.loading = true
-            const { error } = await AuthService.logout()
 
-            if (error) this.error = error
-            else {
-                this.error = null
-                this.user = null
-            }
+            await AuthService.logout()
+
+            this.token = null
+            this.role = null
+
+            // if (error) this.error = error
+            // else {
+            //     this.error = null
+            //     this.user = null
+            // }
         } finally {
             this.loading = false
         }

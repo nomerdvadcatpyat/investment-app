@@ -1,38 +1,48 @@
-import {IAuthedItem, IErrorStatusResponse} from "../schema";
-import {api} from "../fetch";
+import {FetchService} from "./FetchService";
+import {SessionStorageResponse, TokenStorageService} from "./TokenStorageService";
+
+export type JwtResponse = {
+    token: string;
+    type: string;
+    username: string;
+    roles: string[];
+}
+
+export type AuthLoginInfo = {
+    username: string;
+    password: string;
+}
+
+export type SignUpInfo = {
+    username: string;
+    password: string;
+    role?: string;
+}
 
 export class AuthService {
-    static auth = async (): Promise<IAuthedItem & IErrorStatusResponse> => {
-        const { data } = await api.post<IAuthedItem & IErrorStatusResponse>('/api/auth/auth', {})
-        console.log('data', data)
-        return data
+    public AuthService () { }
+
+    static auth = async (): Promise<SessionStorageResponse> => {
+        const jwtToken = TokenStorageService.getUserInfo()
+
+        return jwtToken
     }
 
-    static register = async (email: string, password: string): Promise<IAuthedItem & IErrorStatusResponse> => {
-        const { data } = await api.post<IAuthedItem & IErrorStatusResponse>('/api/auth/register', { email, password }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        console.log('data', data)
+    static register = async (signUpInfo: SignUpInfo): Promise<JwtResponse> => {
+        const { data } = await FetchService.post<JwtResponse>('/api/auth/signup', signUpInfo)
+        TokenStorageService.saveUserInfo(data)
 
         return data
     }
 
-    static login = async (email: string, password: string): Promise<IAuthedItem & IErrorStatusResponse> => {
-        const { data } = await api.post<IAuthedItem & IErrorStatusResponse>('/api/auth/login', { email, password }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+    static login = async (authLoginInfo: AuthLoginInfo): Promise<JwtResponse> => {
+        const { data } = await FetchService.post<JwtResponse>('/api/auth/signin', authLoginInfo)
+        TokenStorageService.saveUserInfo(data)
 
         return data
     }
 
-    static logout = async (): Promise<IErrorStatusResponse> => {
-        const { data } = await api.post<IErrorStatusResponse>('/api/auth/logout')
-
-        return data
+    static logout = async (): Promise<void> => {
+        TokenStorageService.clearUserInfo()
     }
 }

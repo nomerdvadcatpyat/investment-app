@@ -1,6 +1,7 @@
 import type {NextPage} from 'next'
 import {DatePicker, Table, Typography} from "antd";
 import useSWR from 'swr';
+import {AuthRequired} from "../components/auth/AuthRequired";
 
 enum Market {
     SHARES = 'shares',
@@ -80,10 +81,12 @@ const Home: NextPage = () => {
     ]
 
     return (
-        <Table
-            dataSource={data}
-            columns={columns}
-        />
+        <AuthRequired>
+            <Table
+                dataSource={data}
+                columns={columns}
+            />
+        </AuthRequired>
     )
 }
 

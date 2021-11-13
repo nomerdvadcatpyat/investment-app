@@ -24,7 +24,7 @@ const { Sider } = Layout;
 
 export const AppSider = observer(() => {
     const authStore = useAuth()
-    const roles = authStore.user?.roles
+    const role = authStore.role
     const router = useRouter()
     const [collapsed, setCollapsed] = useState(true)
 
@@ -77,7 +77,7 @@ export const AppSider = observer(() => {
                         {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
                     </div>
                     {
-                        authStore.user ? (
+                        authStore.token ? (
                             <>
                                 {/*<Menu.Item key={MENU_ITEMS.USER} onClick={() => setCollapsed(true)} icon={<UserProfileIcon/>}>*/}
                                 {/*    <Link href={`/${MENU_ITEMS.USER}`}>*/}
