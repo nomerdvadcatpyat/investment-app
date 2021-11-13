@@ -2,7 +2,6 @@ import axios, {Axios, AxiosInstance} from "axios"
 import {TokenStorageService} from "./TokenStorageService";
 
 export const FetchService: AxiosInstance = axios.create({
-    withCredentials: true,
     baseURL: process.env.SERVER_URL,
     headers: {
         'Content-Type': 'application/json',
