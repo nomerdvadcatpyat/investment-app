@@ -1,7 +1,9 @@
 package com.example.investment.app.back.controller;
 
+import com.example.investment.app.back.moexMapper.Mapper;
 import com.example.investment.app.back.service.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public class ExchangeController {
         this.exchangeService = exchangeService;
     }
 
-    @GetMapping("/{market}/{board}")
+    @RequestMapping(value = "/{market}/{board}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     public String getSecurities (
             @PathVariable("market") String market,
             @PathVariable("board") String board,
@@ -26,16 +28,17 @@ public class ExchangeController {
         if (requiredSecurities != null) {
             return exchangeService.getRequiredSecurities(market, board, requiredSecurities);
         }
+        var securities = exchangeService.getSecurities(market, board);
 
-        return exchangeService.getSecurities(market, board);
+        return Mapper.MapSecurities(securities);
     }
 
-    @GetMapping("/{market}/{board}/{secId}")
+    @RequestMapping(value = "/{market}/{board}/{secId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     public String getSecurity (
             @PathVariable("market") String market,
             @PathVariable("board") String board,
             @PathVariable("secId") String secId
     ) {
-        return exchangeService.getSecurity(market, board, secId);
+        return Mapper.MapSecurity(exchangeService.getSecurity(market, board, secId));
     }
 }
