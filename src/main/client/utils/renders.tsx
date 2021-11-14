@@ -31,3 +31,5 @@ export const renderChange = (security: Security) => {
 }
 
 export const renderDate = (textDate: string) => dayjs(textDate).format('DD.MM.YYYY')
+
+export const renderNumber = new Intl.NumberFormat('ru-RU').format
