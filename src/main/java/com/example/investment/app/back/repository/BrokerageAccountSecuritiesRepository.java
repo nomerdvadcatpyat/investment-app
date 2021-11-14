@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BrokerageAccountSecuritiesRepository extends JpaRepository<BrokerageAccountSecurities, Long> {
@@ -14,7 +15,9 @@ public interface BrokerageAccountSecuritiesRepository extends JpaRepository<Brok
     @Query(value = "SELECT * FROM brokerage_account_securities bas " +
             "JOIN brokerage_accounts ba ON bas.brokerage_account_id = ba.id " +
             "WHERE ba.user_id=:userId", nativeQuery = true)
-    List<BrokerageAccountSecurities> findAllByUserId(@Param(value = "userId") Long userId);
+    List<BrokerageAccountSecurities> findAllByUserId (@Param(value = "userId") Long userId);
 
-    List<BrokerageAccountSecurities> findAllByBrokerageAccountId(Long brokerageAccountId);
+    List<BrokerageAccountSecurities> findAllByBrokerageAccountId (Long brokerageAccountId);
+
+    Optional<BrokerageAccountSecurities> findByBrokerageAccountIdAndTicker (Long brokerageAccountId, String ticker);
 }

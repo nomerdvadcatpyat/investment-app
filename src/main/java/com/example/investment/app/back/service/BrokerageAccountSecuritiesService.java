@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BrokerageAccountSecuritiesService {
@@ -17,11 +18,15 @@ public class BrokerageAccountSecuritiesService {
         return brokerageAccountSecuritiesRepository.findAllByBrokerageAccountId(brokerageAccountId);
     }
 
+    public Optional<BrokerageAccountSecurities> findByBrokerageAccountIdAndTicker (Long brokerageAccountId, String ticker) {
+        return brokerageAccountSecuritiesRepository.findByBrokerageAccountIdAndTicker(brokerageAccountId, ticker);
+    }
+
     public List<BrokerageAccountSecurities> findAllByUserId (Long userId) {
         return brokerageAccountSecuritiesRepository.findAllByUserId(userId);
     }
 
-    public BrokerageAccountSecurities createBrokerageAccountSecurities (BrokerageAccountSecurities brokerageAccountSecurities) {
+    public BrokerageAccountSecurities save (BrokerageAccountSecurities brokerageAccountSecurities) {
         return brokerageAccountSecuritiesRepository.save(brokerageAccountSecurities);
     }
 

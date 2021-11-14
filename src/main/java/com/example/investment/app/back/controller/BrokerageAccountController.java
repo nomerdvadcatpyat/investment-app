@@ -3,11 +3,13 @@ package com.example.investment.app.back.controller;
 import com.example.investment.app.back.model.BrokerageAccount;
 import com.example.investment.app.back.model.BrokerageAccountSecurities;
 import com.example.investment.app.back.pojo.CreateBrokerageAccountRequestBody;
+import com.example.investment.app.back.pojo.ModifySecuritiesRequestBody;
 import com.example.investment.app.back.service.BrokerageAccountSecuritiesService;
 import com.example.investment.app.back.service.BrokerageAccountService;
 import com.example.investment.app.back.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +35,7 @@ public class BrokerageAccountController {
     }
 
     @PutMapping("/create")
-    public HttpStatus saveBrokerageAccountSecurities (
+    public HttpStatus saveBrokerageAccount (
             @RequestBody CreateBrokerageAccountRequestBody createBrokerageAccountRequestBody,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         var accountName = createBrokerageAccountRequestBody.getBrokerageAccount();
@@ -44,4 +46,27 @@ public class BrokerageAccountController {
         return HttpStatus.OK;
     }
 
+    @PostMapping("/{brokerageAccountId}/modifySecuritiesCount")
+    public ResponseEntity<?> saveBrokerageAccountSecurities (
+            @RequestBody ModifySecuritiesRequestBody modifySecuritiesRequestBody,
+            @PathVariable("brokerageAccountId") Long brokerageAccountId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        var delta = modifySecuritiesRequestBody.getDelta();
+        var ticker = modifySecuritiesRequestBody.getTicker();
+//        var userId = userDetails.getId();
+
+        var optionalOldAccountSecurities =
+                brokerageAccountSecuritiesService.findByBrokerageAccountIdAndTicker(brokerageAccountId, ticker);
+
+        if (optionalOldAccountSecurities.isPresent()) {
+            var oldAccountSecurities = optionalOldAccountSecurities.get();
+            var newCount = oldAccountSecurities.getCount() + delta;
+
+            brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(oldAccountSecurities.getId(), ticker, newCount, brokerageAccountId));
+        } else {
+            brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(ticker, delta, brokerageAccountId));
+        }
+
+        return ResponseEntity.ok(brokerageAccountSecuritiesService.findByBrokerageAccountIdAndTicker(brokerageAccountId, ticker));
+    }
 }

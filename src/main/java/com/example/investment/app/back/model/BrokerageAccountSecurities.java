@@ -20,6 +20,19 @@ public class BrokerageAccountSecurities {
 
     public BrokerageAccountSecurities() {}
 
+    public BrokerageAccountSecurities(Long id, String ticker, Long count, Long brokerageAccountId) {
+        this.id = id;
+        this.ticker = ticker;
+        this.count = count;
+        this.brokerageAccountId = brokerageAccountId;
+    }
+
+    public BrokerageAccountSecurities(String ticker, Long count, Long brokerageAccountId) {
+        this.ticker = ticker;
+        this.count = count;
+        this.brokerageAccountId = brokerageAccountId;
+    }
+
     public Long getId() {
         return id;
     }

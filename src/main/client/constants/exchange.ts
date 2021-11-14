@@ -60,4 +60,6 @@ export const BOARD_OPTIONS = {
     [Market.FOREIGN_SHARES]: [
         { label: "FQBR", value: ForeignSharesBoard.FQBR, key: ForeignSharesBoard.FQBR }
     ]
-};
+}
+
+export const ALL_BROKERAGE_ACCOUNTS_TYPE = 'all'

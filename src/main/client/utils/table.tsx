@@ -1,6 +1,5 @@
 import get from 'lodash/get'
 import isNaN from 'lodash/isNaN'
-import isString from 'lodash/isString'
 import {CSSProperties, FC} from "react";
 import {Button, Input, Space} from "antd";
 
