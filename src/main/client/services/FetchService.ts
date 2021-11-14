@@ -1,5 +1,5 @@
 import axios, {Axios, AxiosInstance} from "axios"
-import {TokenStorageService} from "./TokenStorageService";
+import {UserInfoStorageService} from "./UserInfoStorageService";
 
 export const FetchService: AxiosInstance = axios.create({
     baseURL: process.env.SERVER_URL,
@@ -9,7 +9,7 @@ export const FetchService: AxiosInstance = axios.create({
 })
 
 FetchService.interceptors.request.use(function (config) {
-    const userInfo = TokenStorageService.getUserInfo()
+    const userInfo = UserInfoStorageService.getUserInfo()
 
     if (userInfo && userInfo.token) {
         if (!config.headers) {

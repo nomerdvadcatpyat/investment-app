@@ -17,7 +17,7 @@ public class BrokerageAccountService {
         return brokerageAccountRepository.findAllByUserId(userId);
     }
 
-    public BrokerageAccount createBrokerageAccount(BrokerageAccount brokerageAccount) {
+    public BrokerageAccount save(BrokerageAccount brokerageAccount) {
         return brokerageAccountRepository.save(brokerageAccount);
     }
 }

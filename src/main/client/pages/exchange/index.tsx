@@ -5,11 +5,11 @@ import useSWR from 'swr';
 import get from 'lodash/get'
 import {Gutter} from "antd/es/grid/row";
 
-import {AuthRequired} from "../../components/auth/AuthRequired";
 import {Security, useTableColumns} from "../../hooks/exchange/useTableColumns";
 import {ExchangeSelect} from "../../components/exchange/ExchangeSelect";
 import {BOARD_OPTIONS, Market, MARKET_OPTIONS, SharesBoard} from "../../constants/exchange";
 import {useRouter} from "next/router";
+import {REFETCH_INTERVAL_IN_MS} from "../../constants/common";
 
 const MAIN_ROW_GUTTERS: [Gutter, Gutter] = [0, 20]
 const SELECTS_ROW_GUTTERS: [Gutter, Gutter] = [20, 0]
@@ -21,7 +21,9 @@ const Home: NextPage = () => {
     const [selectedMarket, setSelectedMarket] = useState<string>(Market.SHARES)
     const [selectedBoard, setSelectedBoard] = useState<string>(SharesBoard.TQBR)
 
-    const { data, error } = useSWR(`/api/exchange/${selectedMarket}/${selectedBoard}`)
+    const { data, error } = useSWR(`/api/exchange/${selectedMarket}/${selectedBoard}`, {
+        refreshInterval: REFETCH_INTERVAL_IN_MS
+    })
 
     useEffect(() => {
         const boards = get(BOARD_OPTIONS, selectedMarket)
@@ -40,42 +42,40 @@ const Home: NextPage = () => {
     })
 
     return (
-        <AuthRequired>
-            <Row gutter={MAIN_ROW_GUTTERS}>
-                <Col span={24}>
-                    <Row gutter={SELECTS_ROW_GUTTERS}>
-                        <Col>
-                            <ExchangeSelect
-                                value={selectedMarket}
-                                options={MARKET_OPTIONS}
-                                onSelect={handleMarketSelect}
-                                placeholder={'Рынок'}
-                            />
-                        </Col>
-                        {
-                            selectedMarket && (
-                                <Col>
-                                    <ExchangeSelect
-                                        value={selectedBoard}
-                                        options={boardOptions}
-                                        onSelect={handleBoardSelect}
-                                        placeholder={'Режим торгов'}
-                                    />
-                                </Col>
-                            )
-                        }
-                    </Row>
-                </Col>
-                <Col span={24}>
-                    <Table
-                        dataSource={data}
-                        columns={columns}
-                        loading={!data && !error}
-                        onRow={handleOnRow}
-                    />
-                </Col>
-            </Row>
-        </AuthRequired>
+        <Row gutter={MAIN_ROW_GUTTERS}>
+            <Col span={24}>
+                <Row gutter={SELECTS_ROW_GUTTERS}>
+                    <Col>
+                        <ExchangeSelect
+                            value={selectedMarket}
+                            options={MARKET_OPTIONS}
+                            onSelect={handleMarketSelect}
+                            placeholder={'Рынок'}
+                        />
+                    </Col>
+                    {
+                        selectedMarket && (
+                            <Col>
+                                <ExchangeSelect
+                                    value={selectedBoard}
+                                    options={boardOptions}
+                                    onSelect={handleBoardSelect}
+                                    placeholder={'Режим торгов'}
+                                />
+                            </Col>
+                        )
+                    }
+                </Row>
+            </Col>
+            <Col span={24}>
+                <Table
+                    dataSource={data}
+                    columns={columns}
+                    loading={!data && !error}
+                    onRow={handleOnRow}
+                />
+            </Col>
+        </Row>
     )
 }
 

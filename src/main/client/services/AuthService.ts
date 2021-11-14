@@ -1,5 +1,5 @@
 import {FetchService} from "./FetchService";
-import {SessionStorageResponse, TokenStorageService} from "./TokenStorageService";
+import {SessionStorageResponse, UserInfoStorageService} from "./UserInfoStorageService";
 
 export type JwtResponse = {
     token: string;
@@ -23,26 +23,26 @@ export class AuthService {
     public AuthService () { }
 
     static auth = async (): Promise<SessionStorageResponse> => {
-        const jwtToken = TokenStorageService.getUserInfo()
+        const jwtToken = UserInfoStorageService.getUserInfo()
 
         return jwtToken
     }
 
     static register = async (signUpInfo: SignUpInfo): Promise<JwtResponse> => {
         const { data } = await FetchService.post<JwtResponse>('/api/auth/signup', signUpInfo)
-        TokenStorageService.saveUserInfo(data)
+        UserInfoStorageService.saveUserInfo(data)
 
         return data
     }
 
     static login = async (authLoginInfo: AuthLoginInfo): Promise<JwtResponse> => {
         const { data } = await FetchService.post<JwtResponse>('/api/auth/signin', authLoginInfo)
-        TokenStorageService.saveUserInfo(data)
+        UserInfoStorageService.saveUserInfo(data)
 
         return data
     }
 
     static logout = async (): Promise<void> => {
-        TokenStorageService.clearUserInfo()
+        UserInfoStorageService.clearUserInfo()
     }
 }

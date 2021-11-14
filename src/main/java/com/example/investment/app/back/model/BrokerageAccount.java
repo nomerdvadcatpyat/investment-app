@@ -21,6 +21,11 @@ public class BrokerageAccount {
 
     public BrokerageAccount() {}
 
+    public BrokerageAccount(String name, Long userId) {
+        this.name = name;
+        this.userId = userId;
+    }
+
     public Long getId() {
         return id;
     }

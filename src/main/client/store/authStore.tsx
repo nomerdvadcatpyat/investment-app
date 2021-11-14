@@ -4,7 +4,8 @@ import {createContext, FC, useContext} from "react";
 
 export default class AuthStore {
     token: string | null = null
-    role: string | null = null
+    username: string | null = null
+    roles: string[] | null = null
 
     error: string | null = null
     loading: boolean = true
@@ -21,6 +22,8 @@ export default class AuthStore {
 
             if (userInfo && userInfo.token) {
                 this.token = userInfo.token
+                this.username = userInfo.username
+                this.roles = userInfo.roles
             }
 
             // if (error) this.error = error
@@ -42,10 +45,12 @@ export default class AuthStore {
             this.loading = true
 
             const authLoginInfo: AuthLoginInfo = { username, password }
-            const { token } = await AuthService.login(authLoginInfo)
+            const userInfo = await AuthService.login(authLoginInfo)
 
-            if (token) {
-                this.token = token
+            if (userInfo.token) {
+                this.token = userInfo.token
+                this.username = userInfo.username
+                this.roles = userInfo.roles
             }
 
             // if (error) this.error = error
@@ -66,10 +71,12 @@ export default class AuthStore {
             this.loading = true
 
             const signUpInfo: SignUpInfo = { username, password }
-            const { token } = await AuthService.register(signUpInfo)
+            const userInfo = await AuthService.register(signUpInfo)
 
-            if (token) {
-                this.token = token
+            if (userInfo && userInfo.token) {
+                this.token = userInfo.token
+                this.username = userInfo.username
+                this.roles = userInfo.roles
             }
 
             // if (error) this.error = error
@@ -92,7 +99,8 @@ export default class AuthStore {
             await AuthService.logout()
 
             this.token = null
-            this.role = null
+            this.username = null
+            this.roles = null
 
             // if (error) this.error = error
             // else {

@@ -4,7 +4,7 @@ const USER_INFO = 'UserInfo';
 
 export type SessionStorageResponse = JwtResponse | null
 
-export class TokenStorageService {
+export class UserInfoStorageService {
     constructor () { }
 
     public static saveUserInfo (userInfo: JwtResponse) {

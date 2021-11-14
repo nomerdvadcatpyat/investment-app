@@ -1,14 +1,12 @@
 import {observer} from "mobx-react";
 import {useRouter} from "next/router";
-import React, {useCallback, useState} from "react";
+import React, {CSSProperties, useCallback, useMemo, useState} from "react";
 import {Layout, Menu} from "antd";
 import {
-    HomeOutlined, LoginOutlined,
+    LoginOutlined,
     LogoutOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    ReadOutlined,
-    TableOutlined
 } from "@ant-design/icons";
 import Link from "next/link";
 import {EmployeesIcon} from "../icons/EmployeesIcon";
@@ -19,9 +17,16 @@ import {INDEX_PAGE} from "../../../constants/common";
 
 const { Sider } = Layout;
 
+const SIDER_STYLE: CSSProperties = {
+    overflow: 'auto',
+    height: '100vh',
+    position: 'fixed',
+    left: 0,
+    zIndex: 1000
+}
+
 export const AppSider = observer(() => {
     const authStore = useAuth()
-    const role = authStore.role
     const router = useRouter()
     const [collapsed, setCollapsed] = useState(true)
 
@@ -38,19 +43,21 @@ export const AppSider = observer(() => {
 
     const collapseSider = () => setCollapsed(true)
 
+    const overlayStyle: CSSProperties = useMemo(() => ({
+        display: collapsed ? 'none' : 'block',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        opacity: 0,
+        zIndex: 999
+    }), [collapsed])
+
     return (
         <>
             <div
-                style={{
-                    display: collapsed ? 'none' : 'block',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: 0,
-                    zIndex: 999
-                }}
+                style={overlayStyle}
                 onClick={() => setCollapsed(true)}
             />
             <Sider
@@ -59,13 +66,7 @@ export const AppSider = observer(() => {
                 collapsed={collapsed}
                 width={300}
                 theme={'light'}
-                style={{
-                    overflow: 'auto',
-                    height: '100vh',
-                    position: 'fixed',
-                    left: 0,
-                    zIndex: 1000
-                }}
+                style={SIDER_STYLE}
             >
                 <Menu mode="inline" selectedKeys={[...queryToMenuItem()]}>
                     <div
@@ -79,7 +80,7 @@ export const AppSider = observer(() => {
                         authStore.token ? (
                             <>
                                 <Menu.Item key={MENU_ITEMS.USER} onClick={collapseSider} icon={<UserProfileIcon/>}>
-                                    <Link href={`/${MENU_ITEMS.USER}`}>
+                                    <Link href={`/${MENU_ITEMS.USER}/${authStore.username}`}>
                                         Профиль пользователя
                                     </Link>
                                 </Menu.Item>

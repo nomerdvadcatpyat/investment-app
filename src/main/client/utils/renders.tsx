@@ -23,9 +23,9 @@ export const renderChange = (security: Security) => {
 
     return get(security, 'CHANGE') ? (
         <>
-            <Typography.Paragraph type={textType} style={CHANGE_PRICE_TEXT_STYLE}>
+            <Typography.Text type={textType} style={CHANGE_PRICE_TEXT_STYLE}>
                 {security.CHANGE}₽ / {security.LASTTOPREVPRICE}%
-            </Typography.Paragraph>
+            </Typography.Text>
         </>
     ) : EMPTY_CELL_SYMBOL
 }
