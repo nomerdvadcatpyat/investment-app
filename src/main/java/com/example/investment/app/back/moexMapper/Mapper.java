@@ -27,7 +27,7 @@ public class Mapper {
             for (int j = 0; j < securitiesColumns.length(); j++)
                 security.put(securitiesColumns.getString(j), securitiesData.getJSONArray(i).optString(j));
             for (int j = 0; j < marketDataColumns.length(); j++)
-                security.put(marketDataColumns.getString(j), String.valueOf(marketDataData.getJSONArray(i).optNumber(j)));
+                security.put(marketDataColumns.getString(j), String.valueOf(marketDataData.getJSONArray(i).optString(j)));
             mappedSecurities.add(new JSONObject(security));
         }
         return new JSONArray(mappedSecurities);

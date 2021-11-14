@@ -38,8 +38,8 @@ public class ExchangeService {
     public String getSecurity (String market, String board, String secId) {
         final var resultStockUrl = String.format(STOCK_MARKETS_URL, market, board);
         final var url = String.format("%s/%s.json", resultStockUrl, secId);
-
-        return this.restTemplate.getForObject(url, String.class);
+        var result = this.restTemplate.getForObject(url, String.class);
+        return result;
     }
 
     /**
