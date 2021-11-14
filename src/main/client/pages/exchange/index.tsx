@@ -6,7 +6,7 @@ import get from 'lodash/get'
 import {Gutter} from "antd/es/grid/row";
 
 import {AuthRequired} from "../../components/auth/AuthRequired";
-import {Security, useTableColumns} from "../../hooks/shares/useTableColumns";
+import {Security, useTableColumns} from "../../hooks/exchange/useTableColumns";
 import {ExchangeSelect} from "../../components/exchange/ExchangeSelect";
 import {BOARD_OPTIONS, Market, MARKET_OPTIONS, SharesBoard} from "../../constants/exchange";
 import {useRouter} from "next/router";

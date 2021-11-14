@@ -1,8 +1,7 @@
-import {CSSProperties, FC, useCallback, useMemo} from "react";
-import {Button, Input, Space, Typography} from "antd";
+import {useCallback, useMemo} from "react";
 
-import {EMPTY_CELL_SYMBOL} from "../../constants/table";
-import {getNumberSorter, getTextFilterColumnProperties, getTextFilterDropdown, getTextSorter} from "../../utils/table";
+import {getNumberSorter, getTextFilterColumnProperties, getTextSorter} from "../../utils/table";
+import {renderChange, renderPrice} from "../../utils/renders";
 
 export type Security = {
     SECID: string
@@ -15,17 +14,6 @@ export type Security = {
     CHANGE: string
 }
 
-const getChangePriceTextType = (change: string) => {
-    const changeInNumber = Number(change)
-
-    if (changeInNumber > 0)
-        return 'success'
-    else if (changeInNumber < 0)
-        return 'danger'
-}
-
-const CHANGE_PRICE_TEXT_STYLE = { margin: 0 }
-
 enum DATA_INDICES {
     SECID = 'SECID',
     SHORTNAME = 'SHORTNAME',
@@ -34,21 +22,7 @@ enum DATA_INDICES {
 }
 
 export const useTableColumns = () => {
-    const renderPrice = useCallback(
-        (text: string) => text !== 'null' ? `${text}₽` : EMPTY_CELL_SYMBOL,
-        [])
-
-    const renderChange = useCallback((text: string, security: Security) => {
-        const textType = getChangePriceTextType(security.CHANGE)
-
-        return security.CHANGE !== 'null' ? (
-            <>
-                <Typography.Paragraph type={textType} style={CHANGE_PRICE_TEXT_STYLE}>
-                    {security.CHANGE}₽ / {security.LASTTOPREVPRICE}%
-                </Typography.Paragraph>
-            </>
-        ) : EMPTY_CELL_SYMBOL
-    }, [])
+    const renderChangeInCell = useCallback((change: string, security: Security) => renderChange(security), [])
 
     return useMemo(() => ([
         {
@@ -80,7 +54,7 @@ export const useTableColumns = () => {
             title: 'Изменение',
             key: 'price',
             width: '10%',
-            render: renderChange,
+            render: renderChangeInCell,
             sorter: getNumberSorter(DATA_INDICES.CHANGE)
         }
     ]), [renderChange, renderPrice])
