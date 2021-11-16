@@ -65,7 +65,6 @@ public class AuthService {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             throw new RuntimeException("Error: Username is exist");
         }
-
         User user = new User(signupRequest.getUsername(), passwordEncoder.encode(signupRequest.getPassword()));
 
         String reqRole = signupRequest.getRole();

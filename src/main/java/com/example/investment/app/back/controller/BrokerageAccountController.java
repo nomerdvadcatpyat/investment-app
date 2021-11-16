@@ -2,8 +2,10 @@ package com.example.investment.app.back.controller;
 
 import com.example.investment.app.back.model.BrokerageAccount;
 import com.example.investment.app.back.model.BrokerageAccountSecurities;
+import com.example.investment.app.back.model.BrokerageAccountSecuritiesHistory;
 import com.example.investment.app.back.pojo.CreateBrokerageAccountRequestBody;
 import com.example.investment.app.back.pojo.ModifySecuritiesRequestBody;
+import com.example.investment.app.back.service.BrokerageAccountSecuritiesHistoryService;
 import com.example.investment.app.back.service.BrokerageAccountSecuritiesService;
 import com.example.investment.app.back.service.BrokerageAccountService;
 import com.example.investment.app.back.service.UserDetailsImpl;
@@ -13,6 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -20,13 +27,18 @@ import java.util.List;
 public class BrokerageAccountController {
 
     @Autowired
+    private final BrokerageAccountSecuritiesHistoryService brokerageAccountSecuritiesHistoryService;
+    @Autowired
     private final BrokerageAccountSecuritiesService brokerageAccountSecuritiesService;
     @Autowired
     private final BrokerageAccountService brokerageAccountService;
 
-    public BrokerageAccountController (BrokerageAccountSecuritiesService brokerageAccountSecuritiesService, BrokerageAccountService brokerageAccountService) {
+    public BrokerageAccountController (BrokerageAccountSecuritiesService brokerageAccountSecuritiesService,
+                                       BrokerageAccountService brokerageAccountService,
+                                       BrokerageAccountSecuritiesHistoryService brokerageAccountSecuritiesHistoryService) {
         this.brokerageAccountSecuritiesService = brokerageAccountSecuritiesService;
         this.brokerageAccountService = brokerageAccountService;
+        this.brokerageAccountSecuritiesHistoryService = brokerageAccountSecuritiesHistoryService;
     }
 
     @GetMapping("/{brokerageAccountId}/securities")
@@ -66,6 +78,9 @@ public class BrokerageAccountController {
         } else {
             brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(ticker, delta, brokerageAccountId));
         }
+
+        var securitiesTransaction = new BrokerageAccountSecuritiesHistory(Timestamp.from(Instant.now()), brokerageAccountId, ticker, 63);
+        brokerageAccountSecuritiesHistoryService.save(securitiesTransaction);
 
         return ResponseEntity.ok(brokerageAccountSecuritiesService.findByBrokerageAccountIdAndTicker(brokerageAccountId, ticker));
     }
