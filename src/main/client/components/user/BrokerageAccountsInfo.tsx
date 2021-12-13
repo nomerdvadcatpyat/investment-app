@@ -1,11 +1,9 @@
-import {Dispatch, FC, useCallback, useEffect, useMemo, useState} from "react";
+import {Dispatch, FC, useCallback, useEffect, useState} from "react";
 import {Button, Col, Form, Input, Row, Tabs, Typography} from "antd";
 import {FetchService} from "../../services/FetchService";
-import {useRouter} from "next/router";
 import useSWR from "swr";
-import {MainLoader} from "../common/Loader";
 import {ALL_BROKERAGE_ACCOUNTS_TYPE} from "../../constants/exchange";
-import {use} from "ast-types";
+import {KeyValueParagraph} from "../common/KeyValueParagraph";
 
 const { TabPane } = Tabs;
 
@@ -17,11 +15,13 @@ export type AccountType = {
 
 type UseBrokerageAccountsListArgumentType = {
     username: string | null
+    ticker?: string
     refetchBrokerageAccountsDependencies?: any[]
+    loading: boolean
 }
 
 // @ts-ignore
-const InnerBrokerageAccountsList = ({ tabChangeHandler, brokerageAccounts, brokerageAccountSecurities, username }) => {
+const InnerBrokerageAccountsList = ({ tabChangeHandler, brokerageAccounts, brokerageAccountSecurities, username, ticker }) => {
     if (!username || !brokerageAccounts) {
         return <></>
     }
@@ -33,17 +33,24 @@ const InnerBrokerageAccountsList = ({ tabChangeHandler, brokerageAccounts, broke
             У вас еще нет ни одного брокерского счета.&nbsp;
         </Typography.Title>
     ) : (
-        <Tabs onChange={tabChangeHandler} defaultActiveKey={ALL_BROKERAGE_ACCOUNTS_TYPE}>
-            <TabPane key={ALL_BROKERAGE_ACCOUNTS_TYPE} tab={'Все счета'}>
-                {/*<Typography.Text>{JSON.stringify(account)}</Typography.Text>*/}
-            </TabPane>
+        <Tabs onChange={tabChangeHandler} defaultActiveKey={'1'}>
+            {/*<TabPane key={ALL_BROKERAGE_ACCOUNTS_TYPE} tab={'Все счета'}>*/}
+            {/*    /!*<Typography.Text>{JSON.stringify(account)}</Typography.Text>*!/*/}
+            {/*</TabPane>*/}
             {
                 brokerageAccounts.map((account: AccountType) => (
                     <TabPane key={account.id} tab={account.name}>
                         {
                             !isBrokerageAccountEmpty ? (
-                                <Typography.Text key={account.id}>{JSON.stringify(brokerageAccountSecurities)}</Typography.Text>
-                            ) : (
+                                <>
+                                    {
+                                        brokerageAccountSecurities?.filter(bas => ticker ? bas.ticker === ticker : true)
+                                            .map((bas: BrokerageAccountSecurity) => {
+                                            return <KeyValueParagraph key={bas.ticker} keyStr={bas.ticker} value={`${bas.count} штук, суммарная стоимость: ${bas.price}₽`} />
+                                        })
+                                    }
+                                </>
+                            ): (
                                 <Typography.Text> На выбранном счету нет ценных бумаг </Typography.Text>
                             )
                         }
@@ -57,14 +64,17 @@ const InnerBrokerageAccountsList = ({ tabChangeHandler, brokerageAccounts, broke
 export type BrokerageAccountSecurity = {
     id: number
     ticker: string
+    market: string
+    board: string
+    price: string
     count: number
     brokerageAccountId: number
 }
 
-export const useBrokerageAccountsList = ({ username, refetchBrokerageAccountsDependencies = [] }: UseBrokerageAccountsListArgumentType) => {
+export const useBrokerageAccountsList = ({ ticker, username, refetchBrokerageAccountsDependencies = [] }: UseBrokerageAccountsListArgumentType) => {
     const [brokerageAccounts, setBrokerageAccounts] = useState<AccountType[] | null>(null)
     const [brokerageAccountSecurities, setBrokerageAccountSecurities] = useState<BrokerageAccountSecurity[]>([])
-    const [selectedBrokerageAccount, setSelectedBrokerageAccount] = useState<string>(ALL_BROKERAGE_ACCOUNTS_TYPE)
+    const [selectedBrokerageAccount, setSelectedBrokerageAccount] = useState<number>('1')
     const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
@@ -83,19 +93,26 @@ export const useBrokerageAccountsList = ({ username, refetchBrokerageAccountsDep
         if (!username || !selectedBrokerageAccount) return
 
         setLoading(true)
-        if (selectedBrokerageAccount === ALL_BROKERAGE_ACCOUNTS_TYPE) {
-            FetchService.get(`/api/user/${username}/securities`)
-                .then(({ data }) => {
-                    setBrokerageAccountSecurities(data)
-                    setLoading(false)
-                })
-        } else {
-            FetchService.get(`/api/brokerage-account/${selectedBrokerageAccount}/securities`)
-                .then(({ data }) => {
-                    setBrokerageAccountSecurities(data)
-                    setLoading(false)
-                })
-        }
+        // if (selectedBrokerageAccount === ALL_BROKERAGE_ACCOUNTS_TYPE) {
+        //     FetchService.get(`/api/user/${username}/securities`)
+        //         .then(({ data }) => {
+        //             setBrokerageAccountSecurities(data)
+        //             setLoading(false)
+        //         })
+        // } else {
+        FetchService.get(`/api/brokerage-account/${selectedBrokerageAccount}/securities`)
+            .then(({ data: securities }) => {
+                return Promise.all(
+                    securities.map((bas) => {
+                        return FetchService.get(`/api/exchange/${bas.market}/${bas.board}/${bas.ticker}`)
+                            .then(({ data }) => ({...bas, price: data.LAST * bas.count}))
+                    }))
+                    .then(data => {
+                        setBrokerageAccountSecurities(data)
+                        setLoading(false)
+                    })
+            })
+        // }
     }, [selectedBrokerageAccount, username])
 
     const tabChangeHandler = useCallback((tabName: string) => {
@@ -105,6 +122,8 @@ export const useBrokerageAccountsList = ({ username, refetchBrokerageAccountsDep
     const BrokerageAccountsList = useCallback((props) => (
         <InnerBrokerageAccountsList
             tabChangeHandler={tabChangeHandler}
+            ticker={ticker}
+            loading={loading}
             {...props}
         />
     ), [tabChangeHandler])
@@ -157,11 +176,7 @@ const ADD_BROKERAGE_ACCOUNT_BUTTON_STYLE = { padding: 0, fontSize: '20px' }
 
 export const BrokerageAccountsInfo: FC<BrokerageAccountsInfoProps> = ({ username }) => {
     const [showBrokerageAccountNumberInput, setShowBrokerageAccountNumberInput] = useState<boolean>(false)
-
-    const { data: userSecurities, error: userSecuritiesFetchError } = useSWR(`/api/user/${username}/securities`)
-
-    const handleAddBrokerageAccountClick = useCallback(() => setShowBrokerageAccountNumberInput(true), [])
-
+   const handleAddBrokerageAccountClick = useCallback(() => setShowBrokerageAccountNumberInput(true), [])
     const { BrokerageAccountsList, brokerageAccountSecurities, brokerageAccounts } = useBrokerageAccountsList({
         username,
         refetchBrokerageAccountsDependencies: [showBrokerageAccountNumberInput]
@@ -172,7 +187,9 @@ export const BrokerageAccountsInfo: FC<BrokerageAccountsInfoProps> = ({ username
             <Col span={24}>
                 {
                     showBrokerageAccountNumberInput ? (
-                        <AddBrokerageAccountForm setShowBrokerageAccountNumberInput={setShowBrokerageAccountNumberInput} />
+                        <AddBrokerageAccountForm
+                            setShowBrokerageAccountNumberInput={setShowBrokerageAccountNumberInput}
+                        />
                     ) : (
                         <Button
                             type={'link'}

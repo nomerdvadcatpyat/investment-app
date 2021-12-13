@@ -15,11 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -65,7 +62,9 @@ public class BrokerageAccountController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         var delta = modifySecuritiesRequestBody.getDelta();
         var ticker = modifySecuritiesRequestBody.getTicker();
-//        var userId = userDetails.getId();
+        var price = modifySecuritiesRequestBody.getPrice();
+        var market = modifySecuritiesRequestBody.getMarket();
+        var board = modifySecuritiesRequestBody.getBoard();
 
         var optionalOldAccountSecurities =
                 brokerageAccountSecuritiesService.findByBrokerageAccountIdAndTicker(brokerageAccountId, ticker);
@@ -74,12 +73,12 @@ public class BrokerageAccountController {
             var oldAccountSecurities = optionalOldAccountSecurities.get();
             var newCount = oldAccountSecurities.getCount() + delta;
 
-            brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(oldAccountSecurities.getId(), ticker, newCount, brokerageAccountId));
+            brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(oldAccountSecurities.getId(), ticker, market, board, newCount, brokerageAccountId));
         } else {
-            brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(ticker, delta, brokerageAccountId));
+            brokerageAccountSecuritiesService.save(new BrokerageAccountSecurities(ticker, market, board, delta, brokerageAccountId));
         }
 
-        var securitiesTransaction = new BrokerageAccountSecuritiesHistory(Timestamp.from(Instant.now()), brokerageAccountId, ticker, 63);
+        var securitiesTransaction = new BrokerageAccountSecuritiesHistory(Timestamp.from(Instant.now()), brokerageAccountId, ticker, price);
         brokerageAccountSecuritiesHistoryService.save(securitiesTransaction);
 
         return ResponseEntity.ok(brokerageAccountSecuritiesService.findByBrokerageAccountIdAndTicker(brokerageAccountId, ticker));

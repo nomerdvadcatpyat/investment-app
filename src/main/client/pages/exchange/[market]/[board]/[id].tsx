@@ -18,24 +18,34 @@ type ModifySecurityCountInBrokerageAccountFormProps = {
     operationType: OperationType | undefined
     selectedBrokerageAccount: string | undefined
     ticker: string
+    market: string
+    board: string
+    price: string
     setBrokerageAccountSecurities: Dispatch<BrokerageAccountSecurity[]>
+    setIsModifySecurityCountFormVisible: Dispatch<boolean>
 }
 
-const ModifySecurityCountInBrokerageAccountForm: FC<ModifySecurityCountInBrokerageAccountFormProps> = ({ operationType, selectedBrokerageAccount, ticker, setBrokerageAccountSecurities }) => {
+const ModifySecurityCountInBrokerageAccountForm: FC<ModifySecurityCountInBrokerageAccountFormProps> = ({ operationType, market, board, selectedBrokerageAccount, ticker, price, setBrokerageAccountSecurities, setIsModifySecurityCountFormVisible }) => {
     const handleSubmit = useCallback(async (values) => {
+        setIsModifySecurityCountFormVisible(false)
         const { count } = values
         const delta = operationType === 'add' ? count : -count
         const { data } = await FetchService.post(`/api/brokerage-account/${selectedBrokerageAccount}/modifySecuritiesCount`, {
             ticker,
+            market,
+            board,
+            price: Number(price),
             delta
         })
 
-        // @ts-ignore
-        setBrokerageAccountSecurities((oldBrokerageAccountSecurities: BrokerageAccountSecurity[]) => {
-            const brokerageAccountSecuritiesWithoutUpdated = oldBrokerageAccountSecurities.filter(bac => bac.ticker !== data.ticker)
-
-            return [...brokerageAccountSecuritiesWithoutUpdated, data]
-        })
+        FetchService.get(`/api/exchange/${data.market}/${data.board}/${data.ticker}`)
+            .then(({ data: security }) => {
+                //@ts-ignore
+                setBrokerageAccountSecurities( (oldBrokerageAccountSecurities: BrokerageAccountSecurity[]) => {
+                    const brokerageAccountSecuritiesWithoutUpdated = oldBrokerageAccountSecurities.filter(bac => bac.ticker !== data.ticker)
+                    return [...brokerageAccountSecuritiesWithoutUpdated, {...data, price: security.LAST * data.count}]
+                })
+            })
     }, [operationType, selectedBrokerageAccount, ticker])
 
     return (
@@ -70,7 +80,8 @@ export default function SecurityPage () {
         brokerageAccountSecurities,
         setBrokerageAccountSecurities
     } = useBrokerageAccountsList({
-        username
+        username,
+        ticker: id
     })
     const handleAddButtonClick = useCallback(() => {
         setSelectedOperation('add')
@@ -81,6 +92,7 @@ export default function SecurityPage () {
         setIsModifySecurityCountFormVisible(true)
     }, [])
     const secName = get(security, 'SECNAME')
+    const secPrice = get(security, 'LAST')
 
     useEffect(() => {
         setSelectedOperation(undefined)
@@ -137,8 +149,12 @@ export default function SecurityPage () {
                                                         <ModifySecurityCountInBrokerageAccountForm
                                                             selectedBrokerageAccount={selectedBrokerageAccount}
                                                             operationType={selectedOperation}
+                                                            market={market}
+                                                            board={board}
                                                             ticker={id}
+                                                            price={secPrice}
                                                             setBrokerageAccountSecurities={setBrokerageAccountSecurities}
+                                                            setIsModifySecurityCountFormVisible={setIsModifySecurityCountFormVisible}
                                                         />
                                                     )
                                                 }

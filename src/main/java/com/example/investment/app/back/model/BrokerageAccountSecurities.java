@@ -13,6 +13,12 @@ public class BrokerageAccountSecurities {
     private String ticker;
 
     @Column
+    private String market;
+
+    @Column
+    private String board;
+
+    @Column
     private Long count;
 
     @Column
@@ -20,16 +26,20 @@ public class BrokerageAccountSecurities {
 
     public BrokerageAccountSecurities() {}
 
-    public BrokerageAccountSecurities(Long id, String ticker, Long count, Long brokerageAccountId) {
+    public BrokerageAccountSecurities(Long id, String ticker, String market, String board, Long count, Long brokerageAccountId) {
         this.id = id;
         this.ticker = ticker;
         this.count = count;
+        this.market = market;
+        this.board = board;
         this.brokerageAccountId = brokerageAccountId;
     }
 
-    public BrokerageAccountSecurities(String ticker, Long count, Long brokerageAccountId) {
+    public BrokerageAccountSecurities(String ticker, String market, String board, Long count, Long brokerageAccountId) {
         this.ticker = ticker;
         this.count = count;
+        this.market = market;
+        this.board = board;
         this.brokerageAccountId = brokerageAccountId;
     }
 
@@ -51,6 +61,22 @@ public class BrokerageAccountSecurities {
 
     public Long getCount() {
         return count;
+    }
+
+    public String getMarket() {
+        return market;
+    }
+
+    public void setMarket(String market) {
+        this.market = market;
+    }
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
     }
 
     public void setCount(Long count) {

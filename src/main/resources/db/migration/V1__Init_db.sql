@@ -25,6 +25,8 @@ create table brokerage_account_securities (
     count int8 not null,
     ticker varchar(255) not null,
     brokerage_account_id int8 not null,
+    market varchar(255) not null,
+    board varchar(255) not null,
     primary key (id),
     foreign key (brokerage_account_id) references brokerage_accounts(id),
     unique (ticker, brokerage_account_id)
